@@ -6,14 +6,20 @@
 	<meta charset="UTF-8">
 </head>
 <body>
+<title> <%= title %> </title>
 
-<form action="/Yoon/write" method="post">
-	
-	<input type="text" name="create_id" id="create_id"/>
+<%
+     for(var i=0; i<rows.length; i++)
+     {
+        var oneItem = rows[i];
+%>
 
-	<input type="text" name="author" id="author"/>
+<p><%= oneItem.title %></p>
+<p><%= oneItem.name %></p>
+<p><%= oneItem.id %></p>
 
-	<button type="submit">Submit</button>
-</form>
+<% } %>
+
+<a href="/Yoon/write_place">write</a>
 </body>
 </html>

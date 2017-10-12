@@ -10,30 +10,45 @@ var pool = mysql.createPool({
     password: '1234'
 });
 
-
-/* GET users listing. */
+/* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('Yoon', { title: 'Yoon' });
-});
-
-router.post('/write', function (req, res, next) {
-
-    var create_id = req.body.create_id;
-    var author = req.body.author;
-    var datas = [create_id, author];
 
     pool.getConnection(function (err, connection) {
-
-        var sqlForInsertBoard = "insert into board(id, name) values(?,?)";
-        connection.query(sqlForInsertBoard, datas, function (err, rows) {
+        // Use the connection
+        connection.query('SELECT * FROM board', function (err, rows) {
             if (err) console.error("err : " + err);
             console.log("rows : " + JSON.stringify(rows));
 
-            res.redirect('/Yoon');
+            res.render('Yoon', { title: 'Yoon', rows: rows });
             connection.release();
 
+            // Don't use the connection here, it has been returned to the pool.
         });
     });
 });
 
-module.exports = router; 
+router.get('/write_place', function (req, res, next) {
+    res.render('write_place', { title: 'Yoon' });
+});
+
+router.post('/write', function (req, res, next) {
+
+    var title_yoon = req.body.title_yoon;
+    var author = req.body.author;
+    var datas = [title_yoon, author];
+
+    pool.getConnection(function (err, connection) {
+
+        var sqlForInsertBoard = "insert into board(title, name) values(?,?)";
+        connection.query(sqlForInsertBoard, datas, function (err, rows) {
+            if (err) { console.error("err : " + err); }
+            console.log("rows : " + JSON.stringify(rows));
+
+
+            res.redirect('/Yoon');
+            connection.release();
+        });
+    });
+});
+
+module.exports = router;
